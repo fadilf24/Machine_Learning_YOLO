@@ -38,4 +38,16 @@ def load_config(path: str) -> AppConfig:
         learning_rate=training_raw.get("learning_rate", training_raw.get("lr", 0.001)),  # FIXED
     )
 
-    return AppConfig(dataset=dataset, training=training)
+    return {
+        "dataset": {
+            "train_dir": dataset.train_dir,
+            "val_dir": dataset.val_dir,
+        },
+        "training": {
+            "epochs": training_epochs,
+            "batch": training.batch,
+            "imgsz": training.imgsz,
+            "learning_rate": training.learning_rate,
+        }
+    }
+
