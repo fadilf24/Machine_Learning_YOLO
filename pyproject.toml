@@ -1,0 +1,36 @@
+[project]
+name = "bsort"
+version = "0.1.0"
+description = "Bottle Cap Color Detection CLI and ML Pipeline"
+authors = [{ name = "Your Name", email = "your@email.com" }]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "ultralytics",
+    "click",
+    "pyyaml",
+    "wandb",
+]
+
+[project.scripts]
+bsort = "bsort.cli:cli"
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.'MAIN']
+max-line-length = 88
+disable = [
+    "C0114",  # missing module docstring
+    "C0115",  # missing class docstring
+    "C0116",  # missing function docstring
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+addopts = "-q"
