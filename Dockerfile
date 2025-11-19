@@ -4,19 +4,20 @@ FROM python:3.10
 # Set working directory
 WORKDIR /app
 
-# Copy pyproject.toml & requirements.txt
-COPY pyproject.toml requirements.txt ./
+# Copy requirements.txt
+COPY requirements.txt ./
 
-# Install dependencies
+# Upgrade pip dan install dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy semua kode Python dan folder configs, notebooks, tests
+# Copy semua kode
 COPY bsort/ ./bsort/
 COPY configs/ ./configs/
 COPY notebooks/ ./notebooks/
 COPY tests/ ./tests/
+COPY README.md ./
 
-# Set entrypoint
+# Set CLI entrypoint
 ENTRYPOINT ["bsort"]
 CMD ["--help"]
