@@ -20,24 +20,26 @@ class AppConfig:
     dataset: DatasetConfig
     training: TrainConfig
 
-def load_config(path: str) -> AppConfig:
+def load_config(path: str):
     with open(path, "r") as f:
         raw = yaml.safe_load(f)
 
-    dataset = DatasetConfig(
-        train_dir=raw["dataset"]["train_dir"],
-        val_dir=raw["dataset"]["val_dir"]
-    )
-
+    dataset_raw = raw.get("dataset", {})
     training_raw = raw.get("training", {})
 
-    training = TrainConfig(
-        epochs=training_raw.get("epochs", 10),
-        batch=training_raw.get("batch", 4),
-        imgsz=training_raw.get("imgsz", 640),                 # FIXED
-        learning_rate=training_raw.get("learning_rate", training_raw.get("lr", 0.001)),  # FIXED
-    )
-
+    return {
+        "dataset": {
+            "train_dir": dataset_raw.get("train_dir"),
+            "val_dir": dataset_raw.get("val_dir"),
+        },
+        "training": {
+            "epochs": training_raw.get("epochs", 10),
+            "batch": training_raw.get("batch", 4),
+            "imgsz": training_raw.get("imgsz", 640),
+            "learning_rate": training_raw.get("learning_rate", training_raw.get("lr", 0.001)),
+        },
+    }
+    
     return {
         "dataset": {
             "train_dir": dataset.train_dir,
