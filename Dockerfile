@@ -1,25 +1,22 @@
-FROM python:3.10-slim
+# Gunakan Python 3.10
+FROM python:3.10
 
+# Set working directory
 WORKDIR /app
 
-# Install build tools & git
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    python3-dev \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Copy pyproject.toml & requirements.txt
+COPY pyproject.toml requirements.txt ./
 
-# Copy project
-COPY . .
+# Install dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Upgrade pip, setuptools, wheel
-RUN pip install --upgrade pip setuptools wheel
+# Copy semua kode Python dan folder configs, notebooks, tests
+COPY bsort/ ./bsort/
+COPY configs/ ./configs/
+COPY notebooks/ ./notebooks/
+COPY tests/ ./tests/
 
-# Install package dari pyproject.toml
-RUN pip install .
-
-# Clone dataset dari GitHub (ganti URL sesuai repo dataset Anda)
-RUN git clone https://github.com/username/dataset-bottlecaps.git data
-
-# Entry point
-CMD ["bsort"]
+# Set entrypoint
+ENTRYPOINT ["bsort"]
+CMD ["--help"]
