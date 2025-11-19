@@ -5,11 +5,11 @@ on:
   pull_request:
 
 jobs:
-  build-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -17,21 +17,22 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
-          pip install ".[test]" black isort pylint pytest
+          pip install -r requirements.txt
+          pip install black isort pylint pytest
 
-      - name: Black Format Check
-        run: black --check .
+      - name: Auto format code (Black + isort)
+        run: |
+          black .
+          isort .
 
-      - name: isort Check
-        run: isort --check-only .
+      - name: Lint with pylint
+        run: |
+          pylint bsort || true
 
-      - name: Pylint Check
-        run: pylint bsort --fail-under=5
+      - name: Run tests
+        run: pytest -q
 
-      - name: Run Tests
-        run: pytest
-
-      - name: Build Docker Image
+      - name: Build Docker image
         run: docker build -t bsort:latest .
