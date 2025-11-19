@@ -2,7 +2,7 @@
 name = "bsort"
 version = "0.1.0"
 description = "Bottle Cap Color Detection CLI and ML Pipeline"
-authors = [{ name = "Your Name", email = "your@email.com" }]
+authors = [{ name = "Fadil Farhan Ridwan", email = "fadilfarhan24.ff@email.com" }]
 readme = "README.md"
 requires-python = ">=3.10"
 
