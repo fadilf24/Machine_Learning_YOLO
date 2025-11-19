@@ -1,66 +1,37 @@
-"""
-Model utilities for BottleSort.
-Provides BottleSortModel, train_model, infer_image.
-
-All functions are compatible with unit tests.
-"""
-
-from __future__ import annotations
-from typing import Any, List, Dict
+# bsort/model.py
 import os
+from typing import Dict, Any
+from ultralytics import YOLO
 
-# ----------------------------------------------------------------------
-# ADD THIS DUMMY YOLO FOR UNIT TEST COMPATIBILITY
-# ----------------------------------------------------------------------
-class YOLO:
-    """Dummy YOLO class for unit testing."""
-    def __init__(self, *args, **kwargs):
-        pass
+def train_model(config: Dict[str, Any]):
+    """Training dummy model - adapted to what's expected from tests."""
 
-# ----------------------------------------------------------------------
-# MAIN MODEL WRAPPER
-# ----------------------------------------------------------------------
-class BottleSortModel:
-    """
-    Dummy model wrapper used for Task 2 (pipeline + CI/CD).
-    """
+    dataset = config.get("dataset", {})
+    train_dir = dataset.get("train_dir")
+    val_dir = dataset.get("val_dir")
 
-    def __init__(self, model_path: str = "model.pt") -> None:
-        self.model_path = model_path
-        self.is_trained = False
+    training = config.get("training", {})
+    epochs = training.get("epochs", 10)
+    batch = training.get("batch", 4)
+    lr = training.get("lr", training.get("learning_rate", 0.001))
 
-    def train(self, config: Dict[str, Any]) -> str:
-        """Simulates training."""
-        self.is_trained = True
+    # Mock-compatible output
+    model = YOLO("yolov8n.pt")
+    result = model.train(
+        data={"train": train_dir, "val": val_dir},
+        epochs=epochs,
+        batch=batch,
+        lr=lr,
+    )
 
-        output_path = "model_trained.pt"
-        with open(output_path, "w") as f:
-            f.write("dummy model weights")
+    return result
 
-        return output_path
+def infer_image(config: Dict[str, Any], image_path: str):
+    """Inference wrapper compatible with tests."""
 
-    def predict(self, image_path: str) -> List[str]:
-        """Simulates prediction."""
-        return ["dummy_result"]
+    model_path = config["model"]["weights"]      # FIXED
 
-# ----------------------------------------------------------------------
-# TOP-LEVEL FUNCTIONS (required by tests)
-# ----------------------------------------------------------------------
-def train_model(config: Dict[str, Any]) -> str:
-    """Dummy train function."""
-    if "dataset_path" not in config:
-        raise KeyError("dataset_path missing in config")
+    model = YOLO(model_path)
+    results = model.predict(image_path)
 
-    model = BottleSortModel()
-    return model.train(config)
-
-
-def infer_image(model_path: str, image_path: str) -> List[str]:
-    """Dummy inference function."""
-    if not os.path.exists(model_path):
-        # create dummy for unit test
-        with open(model_path, "w") as f:
-            f.write("dummy model")
-
-    model = BottleSortModel(model_path)
-    return model.predict(image_path)
+    return results
