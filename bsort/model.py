@@ -1,36 +1,48 @@
+"""
+Model utilities for training and inference.
+"""
+
+from __future__ import annotations
 from ultralytics import YOLO
-from typing import Optional
+from typing import Dict, Any
 
 
-class BottleSortModel:
-    """YOLOv8 wrapper class for bottle cap detection."""
+def train_model(config: Dict[str, Any]) -> str:
+    """
+    Train YOLO model using the provided configuration.
 
-    def __init__(self, model_path: str):
-        """
-        Initialize YOLO model.
+    Args:
+        config (Dict[str, Any]): Configuration dictionary.
 
-        Args:
-            model_path (str): Path to model weight.
-        """
-        self.model = YOLO(model_path)
+    Returns:
+        str: Path to the trained model weights.
+    """
+    model = YOLO("yolov8n.pt")
 
-    def predict(self, image_path: str):
-        """Run inference."""
-        return self.model(image_path)
+    results = model.train(
+        data=config["dataset_path"],
+        epochs=config["training"]["epochs"],
+        imgsz=config["training"]["imgsz"],
+        batch=config["training"]["batch"],
+        lr0=config["training"]["learning_rate"],
+        project="runs/train",
+        name="bsort_model",
+    )
 
-    def train(self, data_yaml: str, epochs: int, batch: int, lr: float):
-        """
-        Train YOLO model.
+    return results.save_dir
 
-        Args:
-            data_yaml (str): Dataset config file.
-            epochs (int)
-            batch (int)
-            lr (float)
-        """
-        return self.model.train(
-            data=data_yaml,
-            epochs=epochs,
-            batch=batch,
-            lr0=lr,
-        )
+
+def infer_image(model_path: str, image_path: str) -> Any:
+    """
+    Run YOLO inference on a single image.
+
+    Args:
+        model_path (str): Path to YOLO model weights.
+        image_path (str): Path to input image.
+
+    Returns:
+        Any: YOLO prediction results.
+    """
+    model = YOLO(model_path)
+    results = model(image_path)
+    return results
