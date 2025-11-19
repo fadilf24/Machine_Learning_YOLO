@@ -1,23 +1,26 @@
 """
-Command-line interface for bsort tool.
+CLI for bsort aligned with unit tests.
 """
 
 from __future__ import annotations
 import argparse
-import yaml
+from dataclasses import dataclass
+
+from bsort.config import load_config
 from bsort.model import train_model, infer_image
 
 
-def load_config(path: str) -> dict:
-    """Load YAML config file."""
-    with open(path, "r") as f:
-        return yaml.safe_load(f)
+@dataclass
+class CLIResult:
+    name: str
+    output: str
 
 
-def cli() -> None:
-    """Main CLI entrypoint."""
+def cli(argv=None) -> CLIResult:
+    """
+    CLI entrypoint that returns CLIResult instead of printing.
+    """
     parser = argparse.ArgumentParser(prog="bsort")
-
     sub = parser.add_subparsers(dest="command")
 
     train_cmd = sub.add_parser("train")
@@ -27,21 +30,16 @@ def cli() -> None:
     infer_cmd.add_argument("--config", required=True)
     infer_cmd.add_argument("--image", required=True)
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.command == "train":
         config = load_config(args.config)
-        output = train_model(config)
-        print(f"Model trained and saved at: {output}")
+        path = train_model(config)
+        return CLIResult(name="train", output=path)
 
-    elif args.command == "infer":
+    if args.command == "infer":
         config = load_config(args.config)
-        model_path = config["model_path"]
-        result = infer_image(model_path, args.image)
-        print(result)
-    else:
-        parser.print_help()
+        result = infer_image(config.model_path, args.image)
+        return CLIResult(name="infer", output=str(result))
 
-
-if __name__ == "__main__":
-    cli()
+    return CLIResult(name="none", output="")
