@@ -1,24 +1,26 @@
-# bsort/cli.py
 import click
 from .config import load_config
 from .model import train_model, infer_image
 
+
 @click.group()
 def cli():
+    """BottleSort CLI"""
     pass
 
-@click.command()
+
+@cli.command()
 @click.option("--config", required=True)
 def train(config):
     cfg = load_config(config)
-    res = train_model(cfg)
+    train_model(cfg)
     click.echo("Training completed")
-    
-@click.command()
+
+
+@cli.command()
 @click.option("--config", required=True)
 @click.option("--image", required=True)
 def infer(config, image):
     cfg = load_config(config)
-    res = infer_image({"model": {"weights": "runs/detect/train/weights/best.pt"}}, image)
+    infer_image(cfg, image)
     click.echo("Inference result")
-
