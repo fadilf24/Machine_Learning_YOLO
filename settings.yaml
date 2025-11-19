@@ -1,0 +1,15 @@
+dataset:
+  train_dir: "data/train"
+  val_dir: "data/val"
+
+model:
+  weights: "runs/detect/train/weights/best.pt"
+
+training:
+  epochs: 50
+  batch: 8
+  lr: 0.001
+  img_size: 640
+
+logging:
+  wandb_project: "bottle-cap-detector"
