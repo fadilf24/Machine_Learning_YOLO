@@ -1,0 +1,33 @@
+# Core ML
+ultralytics==8.2.103
+torch>=2.0.0
+torchvision>=0.15.0
+
+# CLI
+click==8.1.7
+
+# Config & Utilities
+pyyaml==6.0.1
+opencv-python==4.10.0.84
+numpy==1.26.4
+
+# Model tracking
+wandb==0.17.4
+
+# Formatting & Linting
+black==24.4.2
+isort==5.13.2
+pylint==3.2.5
+
+# Testing
+pytest==8.3.2
+
+# Optional for Jupyter notebook (not mandatory for CI)
+jupyter==1.0.0
+
+# Prevent version mismatch
+matplotlib==3.8.3
+pandas==2.2.2
+
+# For docker YOLO compatibility
+scipy==1.12.0
