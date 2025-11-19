@@ -26,11 +26,16 @@ profile = "black"
 [tool.pylint.'MAIN']
 max-line-length = 88
 disable = [
-    "C0114",  # missing module docstring
-    "C0115",  # missing class docstring
-    "C0116",  # missing function docstring
+    "C0114",
+    "C0115",
+    "C0116",
 ]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
 addopts = "-q"
+
+# ✅ Tambahan wajib untuk build pip
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
